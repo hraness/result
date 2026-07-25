@@ -5,6 +5,7 @@
 - `src/index.property.test.ts` – algebraic and arbitrary-input laws.
 - `src/test-support.ts` – bounded property-test helpers used only by the test suite.
 - `dist/` – committed ESM JavaScript and declarations consumed by GitHub dependencies.
+- `.github/workflows/` – read-only branch validation and checks-gated immutable GitHub Release automation.
 - `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, and `LICENSE` – public usage, project policy, and terms.
 - `package.json`, `tsconfig.json`, and `bun.lock` – standalone package and verification configuration.
 
@@ -17,3 +18,4 @@
 - Pair every concrete API change with a readable example test and add an independent property law for algebra, round trips, parsers, or arbitrary-input invariants.
 - Treat this repository as the complete project. Files and Git prose may use only its public names, paths, commands, and examples; do not refer to or infer any non-public source, system, product, package, path, or implementation detail.
 - Run `bun run check` before handing off a change.
+- Treat a `v*` tag as a release request, not a completed release. Before tagging, confirm repository-level immutable releases are enabled; use a strictly increasing stable package version, keep the tag equal to `v<package.json version>` on `main`, and let the read-only verification job complete before its write-scoped publisher creates the Release. Do not create the next tag until that workflow and Release are verified because GitHub concurrency is not a durable queue. After tagging, verify the matching non-draft immutable Release is Latest.
