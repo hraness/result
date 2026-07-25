@@ -1,6 +1,6 @@
 {
-  "name": "@cclrte/result",
-  "version": "0.1.0",
+  "name": "@hraness/result",
+  "version": "0.2.0",
   "description": "A small Result and Option toolkit for TypeScript.",
   "license": "MIT",
   "type": "module",

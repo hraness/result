@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const packageName = "@cclrte/result";
-const importSpecifiers = ["@cclrte/result"];
+const packageName = "@hraness/result";
+const importSpecifiers = ["@hraness/result"];
 const binNames = [];
 const verificationPackages = ["@types/bun@^1.3.14","fast-check@^4.8.0","typescript@^6.0.3"];
 
@@ -14,7 +14,7 @@ async function run(command: string[], cwd: string): Promise<void> {
 }
 
 const repository = process.cwd();
-const work = await mkdtemp(join(tmpdir(), "cclrte-package-smoke-"));
+const work = await mkdtemp(join(tmpdir(), "hraness-package-smoke-"));
 try {
   const archive = join(work, "package.tgz");
   const consumer = join(work, "consumer");
@@ -43,7 +43,7 @@ try {
     "-e",
     `await Promise.all(${JSON.stringify(importSpecifiers)}.map((specifier) => import(specifier)))`,
   ], consumer);
-  await writeFile(join(consumer, "index.ts"), "import * as surface0 from \"@cclrte/result\";\nvoid [surface0];\n");
+  await writeFile(join(consumer, "index.ts"), "import * as surface0 from \"@hraness/result\";\nvoid [surface0];\n");
   await writeFile(join(consumer, "tsconfig.bundler.json"), "{\n  \"compilerOptions\": {\n    \"target\": \"ES2023\",\n    \"lib\": [\n      \"ES2023\",\n      \"DOM\",\n      \"DOM.Iterable\"\n    ],\n    \"types\": [\n      \"node\"\n    ],\n    \"strict\": true,\n    \"noEmit\": true,\n    \"skipLibCheck\": false,\n    \"module\": \"Preserve\",\n    \"moduleResolution\": \"Bundler\"\n  },\n  \"include\": [\n    \"index.ts\"\n  ]\n}");
   await writeFile(join(consumer, "tsconfig.nodenext.json"), "{\n  \"compilerOptions\": {\n    \"target\": \"ES2023\",\n    \"lib\": [\n      \"ES2023\",\n      \"DOM\",\n      \"DOM.Iterable\"\n    ],\n    \"types\": [\n      \"node\"\n    ],\n    \"strict\": true,\n    \"noEmit\": true,\n    \"skipLibCheck\": false,\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\"\n  },\n  \"include\": [\n    \"index.ts\"\n  ]\n}");
   await run([process.execPath, "x", "tsc", "-p", "./tsconfig.bundler.json"], consumer);

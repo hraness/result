@@ -9,7 +9,7 @@ Pin the repository to an immutable version tag:
 ```json
 {
   "dependencies": {
-    "@cclrte/result": "github:hraness/result#v0.1.0"
+    "@hraness/result": "github:hraness/result#v0.2.0"
   }
 }
 ```
@@ -23,7 +23,7 @@ bun install
 ## Use Result
 
 ```ts
-import { err, ok, type Result } from "@cclrte/result";
+import { err, ok, type Result } from "@hraness/result";
 
 function parsePort(value: string): Result<number, "invalid port"> {
   const port = Number(value);

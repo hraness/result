@@ -12,7 +12,7 @@
 # Guidelines
 
 - Use Bun 1.3.14 for repository commands and keep the ESM runtime portable to modern Bun and Node.js projects.
-- Keep the `@cclrte/result` runtime dependency-free. Development-only test utilities must not enter the package exports or runtime graph.
+- Keep the `@hraness/result` runtime dependency-free. Development-only test utilities must not enter the package exports or runtime graph.
 - Preserve discriminated-union narrowing without assertions. Parse foreign values from `unknown` and throw only for violated programmer invariants.
 - Use `Result<T, E>` for recoverable failures and `Option<T>` for plain absence. Keep helpers small, total, and justified by multiple consumers.
 - Pair every concrete API change with a readable example test and add an independent property law for algebra, round trips, parsers, or arbitrary-input invariants.
