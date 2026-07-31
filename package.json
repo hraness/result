@@ -4,7 +4,9 @@
   "description": "A small Result and Option toolkit for TypeScript.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/index.ts"
+  ],
   "packageManager": "bun@1.3.14",
   "repository": {
     "type": "git",
