@@ -9,7 +9,7 @@ Pin the repository to an immutable version tag:
 ```json
 {
   "dependencies": {
-    "@hraness/result": "github:hraness/result#v0.2.0"
+    "@hraness/result": "github:hraness/result#v0.2.1"
   }
 }
 ```
