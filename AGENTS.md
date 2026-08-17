@@ -18,6 +18,7 @@
 - Use Bun 1.3.14 for repository commands and keep the ESM runtime portable to modern Bun and Node.js projects.
 - Follow `WRITING.md` for internal prose and `STYLE.md` for public prose.
 - Apply unreasonably robust programming when agent work is cheap. Prefer coherent cross-file correctness and focused deterministic evidence to a knowingly weaker design.
+- Deliver changes to `main` through a current-head pull request. Keep the stable `Required` CI job green, resolve every review thread, and serialize merges. Human approval stays optional while one regular maintainer would otherwise self-review. Never force-push or bypass the gate.
 - Keep the `@hraness/result` runtime dependency-free. Development-only test utilities must not enter the package exports or runtime graph.
 - Preserve discriminated-union narrowing without assertions. Model invalid states out of existence, parse foreign values from `unknown`, and throw only for violated programmer invariants.
 - Use `Result<T, E>` for recoverable failures and `Option<T>` for plain absence. Keep helpers small, total, and justified by multiple consumers.
