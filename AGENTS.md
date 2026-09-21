@@ -59,6 +59,7 @@
 
 ## Wordcell search
 
+- Run `bun install --frozen-lockfile` during setup. Search scripts use the repository's pinned local Wordcell 0.22.0 executable and do not install packages when a query runs.
 - From the repository root, use `bun run kb:search "query" --json` for ordinary searches of this public `kb/` vault. Wordcell 0.22.0 retrieves local exact candidates, then asks TypeSafe to rerank at most 25 candidates. Read the returned Markdown and its linked sources before relying on a result.
 - Hosted ranking sends the query and each candidate's identifier, title, vault-relative path, and at most 512 UTF-8 bytes of snippet text to TypeSafe, with provider input-token charges. Keep confidential queries and unpublished or private notes on the local path.
 - Use `bun run kb:search:local "query" --json` for local-only search. Keep credentials outside the repository: `TYPESAFE_API_KEY`, `TYPESAFE_API_KEY_FILE`, or the owner-only `~/.config/wordcell/typesafe-api-key` file.
