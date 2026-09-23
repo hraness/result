@@ -12,26 +12,22 @@ if (!isRecord(packageManifest) || typeof packageManifest.version !== "string") {
 }
 const packageVersion = packageManifest.version;
 
-describe("README product contract", () => {
-  test("leads from outcome through proof, boundaries, and provenance", () => {
-    const landmarks = [
-      "Represent recoverable failure as typed data and plain absence as `null`.",
-      "## Install an immutable release",
-      "## Return one of two valid states",
-      "## Keep failure handling exhaustive",
-      "## Preserve inference through the branch",
-      "## API map",
-      "## Package and compatibility facts",
-      "## Choose the smallest failure model that fits",
-      "## Verify release provenance",
-    ];
+describe("README facts", () => {
+  test("names the installable package", () => {
+    expect(readme.startsWith("# @hraness/result\n")).toBe(true);
+  });
 
-    let previous = -1;
-    for (const landmark of landmarks) {
-      const current = readme.indexOf(landmark);
-      expect(current, `missing README landmark: ${landmark}`).toBeGreaterThan(previous);
-      previous = current;
+  test("escapes pipes inside code spans in table rows", () => {
+    for (const line of readme.split("\n")) {
+      if (!line.startsWith("|")) continue;
+      for (const span of line.matchAll(/`[^`]*`/gu)) {
+        expect(span[0], `unescaped pipe splits a table cell: ${line}`).not.toMatch(/(?<!\\)\|/u);
+      }
     }
+  });
+
+  test("uses no em dashes", () => {
+    expect(readme).not.toContain("\u2014");
   });
 
   test("keeps the install, examples, and API map aligned with the package", () => {

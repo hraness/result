@@ -1,4 +1,4 @@
-# Result
+# @hraness/result
 
 Represent recoverable failure as typed data and plain absence as `null`.
 `@hraness/result` provides a dependency-free `Result<T, E>` and `Option<T>` for
@@ -122,10 +122,10 @@ success type.
 
 | Export | Type or signature | Contract |
 |--------|-------------------|----------|
-| `Result<T, E = Error>` | `Ok<T> | Err<E>` | Recoverable success or failure. |
+| `Result<T, E = Error>` | `Ok<T> \| Err<E>` | Recoverable success or failure. |
 | `Ok<T>` | `{ readonly ok: true; readonly value: T }` | Successful variant. |
 | `Err<E>` | `{ readonly ok: false; readonly error: E }` | Failed variant. |
-| `Option<T>` | `T | null` | Plain absence. It does not include `undefined`. |
+| `Option<T>` | `T \| null` | Plain absence. It does not include `undefined`. |
 | `ok(value)` | `T -> Ok<T>` | Construct a success. |
 | `err(error)` | `E -> Err<E>` | Construct a failure. |
 | `isOk(result)` | Type guard | Narrow a `Result` to `Ok<T>`. |
@@ -163,7 +163,7 @@ deterministic and property tests.
 | A caller can recover from a declared failure | `Result<T, E>`. The failure remains visible in the return type. |
 | A value can be absent without an error | `Option<T>`. Use `null` as the one absence state. |
 | An invariant is impossible in a well-typed program | An assertion or thrown error. `assertNever` covers exhaustive unions. |
-| A local function already returns `T | null` | Keep that shape. `Option<T>` adds a shared name, not new runtime behavior. |
+| A local function already returns `T \| null` | Keep that shape. `Option<T>` adds a shared name, not new runtime behavior. |
 | A product needs async pipelines, validation accumulation, matching syntax, or a large combinator set | Use a richer result library or a product-specific layer. This package intentionally stops at the shared primitives above. |
 
 Compared with an object that independently makes `value` and `error` optional,
@@ -171,22 +171,14 @@ the `ok` discriminant rules out both-present and neither-present states. Compare
 with thrown recoverable errors, `Result<T, E>` makes the failure part of the
 caller's typechecking path.
 
-## Verify release provenance
+## Releases
 
-The supported distribution path is a versioned GitHub Release. A `v*` tag starts
-the release workflow; it is not proof by itself. Before publishing, the workflow
-requires all of these conditions:
-
-- The tag is exactly `v<package.json version>` and uses a stable semantic version.
-- The tagged commit is reachable from `main`, and the version is newer than every existing stable tag.
-- `bun run check` passes with Bun 1.3.14.
-- Rebuilding does not change committed `dist/index.js` or `bun.lock`.
-- The packed package imports in Node.js and passes the package smoke contract.
-
-Only then does the publisher create the matching immutable GitHub Release and
-verify that GitHub reports it as the latest stable release. The current release,
-[`v0.2.1`](https://github.com/hraness/result/releases/tag/v0.2.1), is the tag used
-in the install example.
+Releases are GitHub Releases that CI creates from a `v*` tag after
+`bun run check`, the rebuild check, and the package smoke pass on that commit.
+The install example uses the current release,
+[`v0.2.1`](https://github.com/hraness/result/releases/tag/v0.2.1).
+[CONTRIBUTING.md](./CONTRIBUTING.md) lists every condition the release workflow
+checks.
 
 ## Development and contributions
 
