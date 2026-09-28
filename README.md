@@ -164,7 +164,9 @@ deterministic and property tests.
 | A value can be absent without an error | `Option<T>`. Use `null` as the one absence state. |
 | An invariant is impossible in a well-typed program | An assertion or thrown error. `assertNever` covers exhaustive unions. |
 | A local function already returns `T \| null` | Keep that shape. `Option<T>` adds a shared name, not new runtime behavior. |
-| A product needs async pipelines, validation accumulation, matching syntax, or a large combinator set | Use a richer result library or a product-specific layer. This package intentionally stops at the shared primitives above. |
+| A product needs async pipelines, validation accumulation, matching syntax, or a large combinator set | Use [neverthrow](https://github.com/supermacro/neverthrow) for `ResultAsync` and method chaining, [true-myth](https://github.com/true-myth/true-myth) for `Result` and `Maybe` classes with methods, or [Effect](https://effect.website) for typed errors with concurrency and dependency injection. This package stops at the primitives above. |
+
+Checked on 2026-09-28.
 
 Compared with an object that independently makes `value` and `error` optional,
 the `ok` discriminant rules out both-present and neither-present states. Compared
@@ -195,3 +197,5 @@ Report suspected vulnerabilities privately as described in
 ## License
 
 MIT
+
+Maintained by [Hraness](https://hraness.com).

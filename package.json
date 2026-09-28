@@ -1,7 +1,7 @@
 {
   "name": "@hraness/result",
   "version": "0.2.1",
-  "description": "A small Result and Option toolkit for TypeScript.",
+  "description": "Dependency-free Result and Option types for TypeScript. Checking ok narrows a result to its value or its declared error.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
