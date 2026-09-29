@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
@@ -46,7 +46,7 @@ jobs:
           CHECK: ${{ needs.check.result }}
         run: |
           set -euo pipefail
-          for result in "$CHECK"; do
+          for result in $CHECK; do
             if [[ "$result" != success ]]; then
               printf 'Unexpected required job result: %s\n' "$result"
               exit 1
