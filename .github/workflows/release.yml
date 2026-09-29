@@ -133,3 +133,78 @@ jobs:
             echo "::error::Latest release is $latest_tag, expected $GITHUB_REF_NAME"
             exit 1
           fi
+
+  npm:
+    # Publishes the tagged commit to npm through npm trusted publishing: the
+    # registry exchanges this job's GitHub OIDC token for a short-lived credential,
+    # so no npm token is stored and no one approves the release. CONTRIBUTING.md
+    # lists the one-time registry setup the job needs.
+    name: Publish to npm
+    needs: [verify, publish]
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED_NAME: "@hraness/result"
+      VERIFIED_TAG: ${{ needs.verify.outputs.verified_tag }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+          registry-url: "https://registry.npmjs.org"
+      - name: Pin npm
+        run: |
+          set -euo pipefail
+          npm install --global npm@11.19.0 --ignore-scripts --registry=https://registry.npmjs.org
+          test "$(npm --version)" = "11.19.0"
+      - name: Publish the tagged package
+        run: |
+          set -euo pipefail
+          if [[ -z "$VERIFIED_TAG" || "$VERIFIED_TAG" != "$GITHUB_REF_NAME" ]]; then
+            echo "::error::Publish request does not match the verified tag"
+            exit 1
+          fi
+          name="$(node -p 'require("./package.json").name')"
+          version="$(node -p 'require("./package.json").version')"
+          if [[ "$name" != "$EXPECTED_NAME" || "v$version" != "$GITHUB_REF_NAME" ]]; then
+            echo "::error::package.json names $name@$version, expected $EXPECTED_NAME at $GITHUB_REF_NAME"
+            exit 1
+          fi
+          probe="$RUNNER_TEMP/npm-view.txt"
+          if ! npm view "$name" name --json --registry=https://registry.npmjs.org >/dev/null 2>"$probe"; then
+            if grep -q E404 "$probe"; then
+              echo "::warning::$name is not on npm yet, so trusted publishing cannot run. CONTRIBUTING.md lists the one-time setup."
+              exit 0
+            fi
+            cat "$probe"
+            echo "::error::Could not read $name from npm"
+            exit 1
+          fi
+          if npm view "$name@$version" version --json --registry=https://registry.npmjs.org >/dev/null 2>"$probe"; then
+            echo "::notice::$name@$version is already on npm"
+            exit 0
+          elif ! grep -q E404 "$probe"; then
+            cat "$probe"
+            echo "::error::Could not check whether $name@$version is on npm"
+            exit 1
+          fi
+          pack="$RUNNER_TEMP/npm-pack"
+          mkdir "$pack"
+          npm pack --ignore-scripts --pack-destination "$pack"
+          npm publish "$pack"/*.tgz --access public --provenance --ignore-scripts --registry=https://registry.npmjs.org
+          for _ in $(seq 1 10); do
+            predicate="$(npm view "$name@$version" dist.attestations.provenance.predicateType --prefer-online --registry=https://registry.npmjs.org 2>/dev/null || true)"
+            if [[ "$predicate" == "https://slsa.dev/provenance/v1" ]]; then
+              echo "Published $name@$version with provenance"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::npm does not report $name@$version with a provenance attestation"
+          exit 1
