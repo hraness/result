@@ -4,10 +4,10 @@ Represent recoverable failure as typed data and plain absence as `null`.
 `@hraness/result` provides a dependency-free `Result<T, E>` and `Option<T>` for
 TypeScript without adding a framework or runtime policy.
 
-The `ok` discriminant narrows both branches. A caller that handles success must
-also handle the declared failure type.
+Check `result.ok` to narrow the result to its success value or declared error
+type.
 
-## Install an immutable release
+## Install
 
 Pin the GitHub dependency to a version tag. The current release is
 [`v0.2.1`](https://github.com/hraness/result/releases/tag/v0.2.1).
@@ -138,23 +138,19 @@ success type.
 The package does not provide matching syntax, asynchronous combinators,
 validation accumulation, or application-specific error classes.
 
-## Package and compatibility facts
+## Compatibility
 
 | Concern | Contract |
 |---------|----------|
 | Runtime graph | Zero runtime dependencies. |
 | Module format | ESM only. There is no CommonJS `require` export. |
-| Runtime artifact | GitHub installs execute the committed `dist/index.js`; release `v0.2.1` contains 952 bytes of unminified JavaScript. |
+| Runtime artifact | GitHub installs execute the included `dist/index.js`. |
 | Type artifact | TypeScript reads `src/index.ts` through the package export map. |
-| Build | Bun 1.3.14 bundles `src/index.ts` for the Node target as ESM. |
-| Bun | The repository builds and runs its tests with Bun 1.3.14. |
-| Node.js | Package smoke imports the packed ESM artifact with Node.js. |
-| TypeScript | Package smoke typechecks a packed consumer with both `Bundler` and `NodeNext` module resolution. |
+| Bun and Node.js | Import the package as ESM. |
+| TypeScript | Supports `Bundler` and `NodeNext` module resolution. |
 
-The repository commits `dist/index.js` because a GitHub dependency consumes the
-checked-in tree. `bun run check` typechecks the source, rebuilds `dist`, packs and
-imports a temporary consumer, checks both TypeScript resolution modes, and runs
-deterministic and property tests.
+The GitHub dependency includes its JavaScript artifact, so you do not need to
+build the package before importing it.
 
 ## Choose the smallest failure model that fits
 
@@ -166,8 +162,6 @@ deterministic and property tests.
 | A local function already returns `T \| null` | Keep that shape. `Option<T>` adds a shared name, not new runtime behavior. |
 | A product needs async pipelines, validation accumulation, matching syntax, or a large combinator set | Use [neverthrow](https://github.com/supermacro/neverthrow) for `ResultAsync` and method chaining, [true-myth](https://github.com/true-myth/true-myth) for `Result` and `Maybe` classes with methods, or [Effect](https://effect.website) for typed errors with concurrency and dependency injection. This package stops at the primitives above. |
 
-Checked on 2026-09-28.
-
 Compared with an object that independently makes `value` and `error` optional,
 the `ok` discriminant rules out both-present and neither-present states. Compared
 with thrown recoverable errors, `Result<T, E>` makes the failure part of the
@@ -175,12 +169,9 @@ caller's typechecking path.
 
 ## Releases
 
-Releases are GitHub Releases that CI creates from a `v*` tag after
-`bun run check`, the rebuild check, and the package smoke pass on that commit.
-The install example uses the current release,
-[`v0.2.1`](https://github.com/hraness/result/releases/tag/v0.2.1).
-[CONTRIBUTING.md](./CONTRIBUTING.md) lists every condition the release workflow
-checks.
+Browse [GitHub Releases](https://github.com/hraness/result/releases) for version
+history. The [contributor guide](./CONTRIBUTING.md#releases) explains how to
+prepare a release.
 
 ## Development and contributions
 
