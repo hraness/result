@@ -28,6 +28,10 @@ conditions hold:
 The publisher then creates the matching immutable GitHub Release and verifies
 that GitHub reports it as the latest stable release.
 
+Merging a `package.json` version bump to `main` creates its annotated `v*` tag
+automatically once CI passes on that commit, through the `hraness-release-tagger`
+GitHub App. Pushing the tag by hand still works.
+
 ## npm
 
 After the GitHub Release, the release workflow's `npm` job publishes the
