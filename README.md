@@ -118,6 +118,14 @@ const port = unwrapOr(parsed, 8080);               // number
 `unwrapOr` returns the success value or a caller-supplied fallback of the same
 success type.
 
+## Handle thrown exceptions separately
+
+`Result` does not catch exceptions for you. In particular, `mapOk` calls your transform directly on success; an exception from that callback propagates to the caller. On failure, it returns the failed result without calling the transform.
+
+Use `err(...)` for the recoverable outcomes you declare in your function's return type. If you wrap a throwing API, catch its exception in your own adapter and decide which errors are recoverable. `unwrapOr` supplies a fallback for an `Err`; it does not recover from an exception thrown before the result exists.
+
+The `readonly` fields are a TypeScript constraint, not a runtime freeze. The constructors return ordinary objects, so do not rely on them to freeze a payload or validate foreign input.
+
 ## API map
 
 | Export | Type or signature | Contract |
