@@ -59,5 +59,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "overrides": {
+    "@tobilu/qmd": "https://github.com/hraness/qmd/releases/download/v2.8.3-hraness.1/hraness-qmd-2.8.3-hraness.1.tgz"
   }
 }
